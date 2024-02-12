@@ -17,18 +17,21 @@
         <PiecesContainer :pieces="bottomPieces" />
       </div>
     </div>
+    <PuzzleSolver @solution-found="handleSolution" />
   </div>
 </template>
 
 <script>
 import PiecesContainer from './components/PiecesContainer.vue';
 import GameBoard from './components/GameBoard.vue';
+import PuzzleSolver from './components/PuzzleSolver.vue';
 
 export default {
   name: 'App',
   components: {
     PiecesContainer,
-    GameBoard
+    GameBoard,
+    PuzzleSolver
   },
   data() {
     return {
@@ -39,13 +42,13 @@ export default {
         { name: "C", color: "orange", shape: ["X..", "XXX", ".X."] },
         { name: "D", color: "purple", shape: ["XX.", ".XX", "..X"] },
         { name: "E", color: "yellow", shape: ["XXXX", ".X.."] },
-        { name: "F", color: "cherry", shape: ["XX.", ".XX"] },
+        { name: "F", color: "#DE3163", shape: ["XX.", ".XX"] },
         { name: "G", color: "green", shape: ["XXX", ".X."] },
         { name: "H", color: "blue", shape: ["XXX", "X..", "X.."] },
         { name: "I", color: "red", shape: ["XXXX", "X..."] },
         { name: "J", color: "olive", shape: ["XXX", "X.X"] },
         { name: "K", color: "darkBlue", shape: ["XXX", "X.."] },
-        { name: "L", color: "sky", shape: ["XX", "X."] },
+        { name: "L", color: "#87CEEB", shape: ["XX", "X."] },
       ],
       topPieces: [],
       bottomPieces: [],
@@ -59,6 +62,11 @@ export default {
     this.bottomPieces = this.pieces.slice(4, 8);
     this.leftPieces = this.pieces.slice(8, 10);
     this.rightPieces = this.pieces.slice(10, 12);
+  },
+  methods: {
+    handleSolution(solution) {
+      console.log(solution);
+    }
   }
 };
 </script>
