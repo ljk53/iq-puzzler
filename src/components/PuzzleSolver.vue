@@ -138,7 +138,7 @@ export default {
                         const key = JSON.stringify([piece.name, i, r, c]);
                         Y[key] = [piece.name].concat(
                             shape.flatMap((row, i) =>
-                                row.map((cell, j) => cell === 'X' ? [r + i, c + j] : [])
+                                row.map((cell, j) => cell === 'X' ? JSON.stringify([r + i, c + j]) : [])
                             ).filter(x => x.length)
                         );
                     });
@@ -175,11 +175,10 @@ export default {
             const X = {};
             Object.entries(Y).forEach(([key, value]) => {
                 value.forEach(cell => {
-                    const cellKey = JSON.stringify(cell);
-                    if (!X[cellKey]) {
-                        X[cellKey] = new Set();
+                    if (!X[cell]) {
+                        X[cell] = new Set();
                     }
-                    X[cellKey].add(key);
+                    X[cell].add(key);
                 });
             });
             return X;
@@ -208,29 +207,25 @@ export default {
         select(X, Y, r) {
             const cols = [];
             Y[r].forEach(j => {
-                const jKey = JSON.stringify(j);
-                X[jKey].forEach(i => {
+                X[j].forEach(i => {
                     Y[i].forEach(k => {
-                        const kKey = JSON.stringify(k);
-                        if (kKey !== jKey) {
-                            X[kKey].delete(i);
+                        if (k !== j) {
+                            X[k].delete(i);
                         }
                     });
                 });
-                cols.push(X[jKey]);
-                delete X[jKey];
+                cols.push(X[j]);
+                delete X[j];
             });
             return cols;
         },
         deselect(X, Y, r, cols) {
             Y[r].slice().reverse().forEach(j => {
-                const jKey = JSON.stringify(j);
-                X[jKey] = cols.pop();
-                X[jKey].forEach(i => {
+                X[j] = cols.pop();
+                X[j].forEach(i => {
                     Y[i].forEach(k => {
-                        const kKey = JSON.stringify(k);
-                        if (kKey !== jKey) {
-                            X[kKey].add(i);
+                        if (k !== j) {
+                            X[k].add(i);
                         }
                     });
                 });
