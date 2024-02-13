@@ -9,22 +9,9 @@
 
 <script>
 export default {
+    inject: ['initializedPieces'],
     data() {
         return {
-            pieces: [
-                { "name": "A", "color": "pink", "shape": ["XX..", ".XXX"] },
-                { "name": "B", "color": "cyan", "shape": ["XXX", "XX."] },
-                { "name": "C", "color": "orange", "shape": ["X..", "XXX", ".X."] },
-                { "name": "D", "color": "purple", "shape": ["XX.", ".XX", "..X"] },
-                { "name": "E", "color": "yellow", "shape": ["XXXX", ".X.."] },
-                { "name": "F", "color": "cherry", "shape": ["XX.", ".XX"] },
-                { "name": "G", "color": "green", "shape": ["XXX", ".X."] },
-                { "name": "H", "color": "blue", "shape": ["XXX", "X..", "X.."] },
-                { "name": "I", "color": "red", "shape": ["XXXX", "X..."] },
-                { "name": "J", "color": "olive", "shape": ["XXX", "X.X"] },
-                { "name": "K", "color": "darkBlue", "shape": ["XXX", "X.."] },
-                { "name": "L", "color": "sky", "shape": ["XX", "X."] },
-            ],
             boardState: [
                 ["1", "2", "2", ".", ".", "3", "3", "3", "3", "4", "4"],
                 ["1", "2", ".", ".", ".", ".", "3", ".", "4", "4", "4"],
@@ -35,40 +22,6 @@ export default {
         };
     },
     methods: {
-        generatePieces() {
-            this.pieces.forEach(piece => {
-                const shape = piece.shape;
-                const rows = shape.length;
-                const cols = shape[0].length;
-                const newShapes = new Set();
-                for (const [newRows, newCols, offset, rs, cs] of this.transforms(rows, cols)) {
-                    const newShape = [];
-                    for (let r = 0; r < newRows; r++) {
-                        newShape.push(new Array(newCols).fill(0));
-                        for (let c = 0; c < newCols; c++) {
-                            const pos = offset + r * rs + c * cs;
-                            const val = shape[Math.floor(pos / cols)][pos % cols];
-                            newShape[r][c] = val;
-                        }
-                    }
-                    newShapes.add(JSON.stringify(newShape));
-                }
-                piece.shapes = Array.from(newShapes).map(JSON.parse);
-            });
-        },
-        transforms(rows, cols) {
-            // rows, cols, offset, row-stride, col-stride
-            return [
-                [rows, cols, 0, cols, 1],
-                [cols, rows, cols - 1, -1, cols],
-                [rows, cols, rows * cols - 1, -cols, -1],
-                [cols, rows, rows * cols - cols, 1, -cols],
-                [cols, rows, 0, 1, cols],
-                [rows, cols, cols - 1, cols, -1],
-                [cols, rows, rows * cols - 1, -1, -cols],
-                [rows, cols, rows * cols - cols, -cols, 1]
-            ];
-        },
         recognizeShapes() {
             const patterns = {};
             this.boardState.forEach((row, i) => {
@@ -108,7 +61,7 @@ export default {
                     return container.some(element => JSON.stringify(element) === targetStr);
                 }
 
-                this.pieces.forEach(piece => {
+                this.initializedPieces.forEach(piece => {
                     if (contains(piece.shapes, shape)) {
                         state.pieceName = piece.name;
                         foundPiecesSet.add(piece.name);
@@ -129,7 +82,7 @@ export default {
             const boardCols = this.boardState[0].length;
             const Y = {};
             const foundPiecesSet = this.recognizeShapes(this.boardState);
-            this.pieces.forEach(piece => {
+            this.initializedPieces.forEach(piece => {
                 if (foundPiecesSet.has(piece.name)) {
                     return;
                 }
@@ -233,7 +186,7 @@ export default {
         },
         populateBoard(solution) {
             const pieceMap = {};
-            this.pieces.forEach(piece => {
+            this.initializedPieces.forEach(piece => {
                 pieceMap[piece.name] = piece;
             });
             solution.forEach((key) => {
@@ -256,7 +209,6 @@ export default {
             });
         },
         solveBoard() {
-            this.generatePieces();
             const Y = this.generateY();
             const X = this.yToX(Y);
             this.printBoard();
