@@ -1,3 +1,4 @@
+// src/utils/puzzleSolver.mjs
 export function recognizeShapes(boardState, pieces) {
     const patterns = {};
     boardState.forEach((row, i) => {
@@ -197,8 +198,8 @@ export function printBoard(boardState) {
 export function solveBoard(boardState, pieces) {
     const Y = generateY(boardState, pieces);
     const X = yToX(Y);
-    printBoard(boardState);
+    // printBoard(boardState);
     const solution = solve(X, Y);
     populateBoard(solution, pieces, boardState);
-    return solution;
+    return [boardState, solution];
 }

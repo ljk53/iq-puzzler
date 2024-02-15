@@ -1,3 +1,4 @@
+<!-- src/components/PuzzleSolver.vue -->
 <template>
     <div>
         <div v-for="(row, i) in boardState" :key="i">
@@ -9,23 +10,17 @@
 
 <script>
 import { solveBoard } from '../utils/puzzleSolver';
+import { mapState } from 'vuex';
 
 export default {
     inject: ['initializedPieces'],
-    data() {
-        return {
-            boardState: [
-                ["1", "2", "2", ".", ".", "3", "3", "3", "3", "4", "4"],
-                ["1", "2", ".", ".", ".", ".", "3", ".", "4", "4", "4"],
-                ["1", "1", ".", ".", ".", ".", ".", ".", ".", ".", "."],
-                [".", "1", ".", ".", ".", ".", ".", ".", ".", ".", "."],
-                [".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
-            ],
-        };
+    computed: {
+        ...mapState(['boardState']),
     },
     methods: {
         solve() {
-            const solution = solveBoard(this.boardState, this.initializedPieces);
+            const [newBoardState, solution] = solveBoard(JSON.parse(JSON.stringify(this.boardState)), this.initializedPieces);
+            this.$store.dispatch('setBoardState', newBoardState);
             this.$emit('solution-found', solution);
         }
     },

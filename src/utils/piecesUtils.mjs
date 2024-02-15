@@ -1,3 +1,4 @@
+// src/utils/piecesUtils.mjs
 export const pieces = [
     { name: "A", color: "pink", shape: ["XX..", ".XXX"] },
     { name: "B", color: "cyan", shape: ["XXX", "XX."] },

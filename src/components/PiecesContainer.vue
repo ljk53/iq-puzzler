@@ -1,3 +1,4 @@
+<!-- src/components/PiecesContainer.vue -->
 <template>
     <div class="pieces-container" :class="{ vertical: isVertical }">
         <div v-for="piece in pieces" :key="piece.name" class="piece">

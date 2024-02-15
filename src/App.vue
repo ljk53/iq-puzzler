@@ -1,3 +1,4 @@
+<!-- src/App.vue -->
 <template>
     <div id="app">
         <div class="container">
@@ -26,6 +27,7 @@ import PiecesContainer from './components/PiecesContainer.vue';
 import GameBoard from './components/GameBoard.vue';
 import PuzzleSolver from './components/PuzzleSolver.vue';
 import { initializePieces } from './utils/piecesUtils';
+import { mapState } from 'vuex';
 
 export default {
     name: 'App',
@@ -55,9 +57,12 @@ export default {
         this.leftPieces = this.initializedPieces.slice(8, 10);
         this.rightPieces = this.initializedPieces.slice(10, 12);
     },
+    computed: {
+        ...mapState(['boardState']),
+    },
     methods: {
         handleSolution(solution) {
-            console.log(solution);
+            console.log("Found solution:", solution);
         }
     }
 };
